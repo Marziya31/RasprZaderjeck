@@ -2,12 +2,13 @@ import pygame
 import pygame.locals
 typed_strings = 0
 
-def upload_info(filename:str="data.txt"):
-    '''
-    Принимает на вход строку filename
-    Не возвращает ничего
-    Задает глобальную переменную typed_strings.
-    '''
+def upload_info(filename:str="data.txt")->None:
+    """ 
+    Загрузка информации из файла
+
+    Args:
+        filename (str, optional): Название файла, из которого загружается информация. По умолчанию-"data.txt".
+    """
     global typed_strings 
     try:
         with open(filename,encoding='utf-8', mode="r") as data:
@@ -19,12 +20,12 @@ def upload_info(filename:str="data.txt"):
         typed_strings = 0        
 
 
-def save_info(filename:str="data.txt"):
-    '''
-    Принимает на вход строку filename
-    Не возвращает ничего
-    Записывает в файл информацию.
-    '''
+def save_info(filename:str="data.txt")->None:
+    """
+    Сохранение информации в файл
+    Args:
+        filename (str, optional): Название файла, в который загружается информация. По умолчанию-"data.txt".
+    """
     global typed_strings 
     try:
         data = open(filename, encoding='utf-8', mode="r")
@@ -43,17 +44,21 @@ def save_info(filename:str="data.txt"):
         pass
 
 def choose_string(filename:str="data.txt", string_number:int=1)->str:
-    '''
-    Принимает на вход строку filename и целое значение string_number.
-    Возвращает строку состоящую не только из чисел с номером string_number
-    Если файла не существует, либо строки с таким номером не существует - возвращает "-1".
-    '''
+    """выбор строки из файла
+
+    Args:
+        filename (str, optional): Название файла, из которого выбирается строка. По умолчанию "data.txt".
+        string_number (int, optional): Номер выбираемой строки. По умолчанию 1.
+
+    Returns:
+        str: строка, стоящяя под номером string_number в файле filename
+    """
     try:
         with open(filename,encoding='utf-8', mode="r") as data:
             
             count = 0
             for line in data:
-                if not line.isdigit():
+                if not line.isdigit() and not line[:-1:].isdigit():
                     count += 1
                 if count == string_number:
                     if line[-1] == '\n':
@@ -65,14 +70,22 @@ def choose_string(filename:str="data.txt", string_number:int=1)->str:
         return None
 
 
-def display_text(text:str, max_x, typed_letters, font, screen, color=(0,0,0), color_ok = (0, 152, 50), 
+def display_text(text:str, max_x:int, typed_letters:int, font, screen, color=(0,0,0), color_ok = (0, 152, 50), 
                  x:int=10, y:int=10):
-    '''
-    Принимает текст, максимальную длинну текста, количество напечатанных букв,
-    шрифт, экран, опционально - цвет, цвет напечатанного и верхний левый угол текста.
-
-    Печатает текст на экран.
-    '''
+    """Отображает текст text на экран screen шрифтом font. 
+        typed_letters написанных букв будут выведенны цветом color_ok, остальные цветом color
+        слово переносится на новую строку, если оно выходит за max_x
+    Args:
+        text (str): строка для вывода на экран
+        max_x (int): максимальная координата вывода на эк
+        typed_letters (int): число напечатанных строк
+        font (pygame.font): шрифт которым печатается строка
+        screen (pygame.display): Дисплей на который выводится информация
+        color (tuple, optional): Цвет ненапечатанного текста. по умолчанию (0,0,0).
+        color_ok (tuple, optional): Цвет напечатанного текста. по умолчанию (0, 152, 50).
+        x (int, optional): x координата верхнего левого угла текста. по умолчанию 10.
+        y (int, optional): y координата верхнего левого угла текста. по умолчанию 10.
+    """
 
     words = text.split()
     len_space = font.size(' ')[0]
@@ -104,15 +117,19 @@ def display_text(text:str, max_x, typed_letters, font, screen, color=(0,0,0), co
 
 
 
-def draw_graphic(data, screen, x=10, y=500, delta_x = 5):
-    '''
-    Функция получает значения в точках и экран на котором рисуется график. Опционально - координаты
-    левого нижнего угла
-    Рисукт график на заданном экране.
-    '''
-    point=pygame.surface.Surface((5,5))
+def draw_graphic(data:list, screen, x=10, y=500, delta_x = 5)->None:
+    """Рисует график на экране screen с левым верхним углом в x y
 
-    pointb=pygame.surface.Surface((5,3))
+    Args:
+        data (list): набор чисел, по которым стоит построить график.
+        screen (pygame.display): Дисплей на который выводится информация
+        x (int, optional): x координата верхнего левого угла текста. по умолчанию 10.
+        y (int, optional): y координата верхнего левого угла текста. по умолчанию 500.
+        delta_x (int, optional): длинна одной точки. по умолчанию 5.
+    """
+    point=pygame.surface.Surface((delta_x,5))
+
+    pointb=pygame.surface.Surface((delta_x,3))
     pointb.fill((0, 0, 0))
 
     for i in data:
@@ -131,7 +148,7 @@ def draw_graphic(data, screen, x=10, y=500, delta_x = 5):
     
 
 
-def UI():
+def UI()->None:
     '''
     Главная функция с циклом Pygame
     '''
